@@ -10,8 +10,8 @@ apt update
 apt install -y git
 
 cd /opt/
-git clone https://github.com/hiddify/hiddify-config
-cd hiddify-config
+git clone https://github.com/Antyfilter/AntyProxy
+cd AntyProxy
 
 
 function install() {

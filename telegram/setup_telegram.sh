@@ -7,8 +7,8 @@ if [[ "$1" ]]; then
 sed -i "s/00000000000000000000000000000001/$1/g" config.py
 fi
 echo 'TLS_DOMAIN = "mail.google.com"'>> config.py
-wget https://raw.githubusercontent.com/hiddify/config/main/telegram/mtproxy.service
-wget -qO- https://raw.githubusercontent.com/hiddify/config/main/google-bbr.sh | bash
+wget https://raw.githubusercontent.com/Antyfilter/AntyProxy/main/telegram/mtproxy.service
+wget -qO- https://raw.githubusercontent.com/Antyfilter/AntyProxy/main/google-bbr.sh | bash
 ln -s  $(pwd)/mtproxy.service /etc/systemd/system/
 systemctl enable mtproxy.service
 systemctl start mtproxy.service

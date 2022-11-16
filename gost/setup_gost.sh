@@ -11,9 +11,9 @@ gunzip gost*
 mv gost* gost
 chmod +x gost
 
-wget https://raw.githubusercontent.com/hiddify/config/main/gost/gost.service
-wget https://raw.githubusercontent.com/hiddify/config/main/gost/nginx.conf
-wget https://raw.githubusercontent.com/hiddify/config/main/gost/nginx-sni-proxy.conf
+wget https://raw.githubusercontent.com/Antyfilter/AntyProxy/main/gost/gost.service
+wget https://raw.githubusercontent.com/Antyfilter/AntyProxy/main/gost/nginx.conf
+wget https://raw.githubusercontent.com/Antyfilter/AntyProxy/main/gost/nginx-sni-proxy.conf
 
 rm /etc/nginx/sites-available/default
 rm /etc/nginx/sites-enabled/default
@@ -22,7 +22,7 @@ mkdir -p /etc/nginx/stream.d/ && ln -s $(pwd)/nginx-sni-proxy.conf /etc/nginx/st
 echo "include /etc/nginx/stream.d/*.conf">>/etc/nginx/nginx.conf;
 ln -s $(pwd)/gost.service /etc/systemd/system/gost.service
 
-wget -qO- https://raw.githubusercontent.com/hiddify/config/main/google-bbr.sh | bash
+wget -qO- https://raw.githubusercontent.com/Antyfilter/AntyProxy/main/google-bbr.sh | bash
 
 
 
