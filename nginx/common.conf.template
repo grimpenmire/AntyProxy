@@ -1,0 +1,91 @@
+location = /defaultusersecret/v2ray/ {
+  #for performance
+  proxy_redirect off;
+  proxy_http_version 1.1;
+  proxy_pass http://127.0.0.1:448/; # Port of v2ray-plugin
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header Host $http_host;
+  # Show real IP if you enable V2Ray access log
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+location = /defaultusersecret/vmess/ {
+  #for performance
+  proxy_redirect off;
+  proxy_http_version 1.1;
+  proxy_pass http://127.0.0.1:445/; # Port of v2ray-plugin
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header Host $http_host;
+  # Show real IP if you enable V2Ray access log
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+location = /defaultusersecret/signal/ {
+    proxy_pass            https://localhost:4433/;
+}
+
+location /defaultusersecret/ {
+  if ($request_uri ~* "/defaultusersecret/redirect/(.*)(%3A%2F%2F|://)(.*)") {
+    return 307 $1://$3;
+  }
+  location = /defaultusersecret/ {
+    return 302 help/index.html;
+  }
+
+  location /defaultusersecret/ghr/ {
+    #for proxy github raw
+    proxy_set_header Host raw.githubusercontent.com;
+    proxy_pass https://raw.githubusercontent.com:443/;
+  }
+
+  location /defaultusersecret/gho/ {
+    #for proxy github object
+    proxy_set_header Host objects.githubusercontent.com;
+    proxy_pass https://objects.githubusercontent.com:443/;
+  }
+
+  location /defaultusersecret/gh/ {
+    #for proxy github
+    proxy_set_header Host github.com;
+    proxy_pass https://github.com:443/;
+    proxy_redirect https://raw.githubusercontent.com/ https://$host/defaultusersecret/ghr/;
+    proxy_redirect https://objects.githubusercontent.com/ https://$host/defaultusersecret/gho/;
+
+    proxy_set_header Accept-Encoding "";
+    sub_filter_once off;
+    sub_filter    https://github.com/ /defaultusersecret/gh/;
+    sub_filter    href="/ href="/defaultusersecret/gh/;
+    sub_filter    src="/ src="/defaultusersecret/gh/;
+  }
+
+  location /defaultusersecret/help/ {
+    #for help
+    alias /opt/GITHUB_REPOSITORY/web/;
+    
+    sub_filter_types text/plain text/html;
+    include /opt/GITHUB_REPOSITORY/nginx/replace.conf;
+    sub_filter_once off;
+  }
+
+  location /defaultusersecret/clash/ {
+    #for clash configs
+     alias /opt/GITHUB_REPOSITORY/clash/;
+     types { }   default_type "text/plain";
+     sub_filter_types text/plain;
+     include /opt/GITHUB_REPOSITORY/nginx/replace.conf;
+     sub_filter_once off;
+  }
+
+  location /defaultusersecret/dns/ {
+    # use it in your browser as https://defaultserverhost/defaultusersecret/dns/dns-query{?dns}
+    proxy_pass https://dns.google:443/;
+  }
+
+}
+
+location / {
+  proxy_pass http://telegramtlsdomain;
+}
+resolver 8.8.8.8;
